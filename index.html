@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monster Slayer</title>
+    <script src="https://npmcdn.com/vue/dist/vue.js">
+    </script>
+    <link rel="stylesheet" href="foundation.min.css">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="app">
+    <section class="row">
+        <div class="small-6 columns">
+            <h1 class="text-center">YOU</h1>
+            <div class="healthbar-container">
+                <div class="healthbar text-center" 
+                :style="{ width: healthpoints + '%'}">
+                            {{healthpoints}}
+                </div>
+            </div>
+        </div>
+        <div class="small-6 columns">
+            <h1 class="text-center">MONSTER</h1>
+            <div class="healthbar-container">
+                <div 
+                class="healthbar text-center" 
+                :style="{ width: monsterpoints + '%'}">
+                            {{monsterpoints}}
+                </div>
+            </div>
+        </div>
+    </section>
+    <section v-if="!playing" class="row controls">
+        <div class="small-12 columns">
+            <button id="start-game" @click="startnewgame">START NEW GAME</button>
+        </div>
+    </section>
+    <section v-else class="row controls">
+        <div class="small-12 columns">
+            <button id="attack" @click="attack">ATTACK</button>
+            <button id="special-attack" @click="specialattack" >SPECIAL ATTACK</button>
+            <button id="heal" @click="heal" >HEAL</button>
+            <button id="give-up" @click="giveup">GIVE UP</button>
+        </div>
+    </section>
+    <section v-if="playing" class="row log">
+        <div class="small-12 columns">
+            <ul>
+                <li v-for="turno in turnos">
+                    {{turno.texto}}
+                    <!-- <div class="player-turn"> {{turnos.texto}} </div>
+                    <div class="monster-turn">123 </div> -->
+                </li>
+            </ul>
+        </div>
+    </section>
+</div>
+</body>
+
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    healthpoints: 100,
+    monsterpoints: 100,
+    playing: false,
+    turnos: []
+  },
+  methods: {
+    attack () {
+      var dano = this.getRandomNumber(5, 8)
+      this.monsterpoints -= dano
+      this.turnos.unshift({
+        jogador: true,
+        texto: 'Jogador tirou do monstro ' + dano
+      })
+
+      if (!this.checavitoria()) {
+        this.monsterattack()
+      }
+    },
+    specialattack () {
+      this.monsterpoints = this.monsterpoints - this.getRandomNumber(15, 25)
+      if (!this.checavitoria()) {
+        this.monsterattack()
+      }
+    },
+    heal () {
+      if (this.healthpoints <= 10) {
+        this.healthpoints += 10
+      } else {
+        this.healthpoints = 100
+      }
+      this.monsterattack()
+    },
+    monsterattack () {
+      var dano = this.getRandomNumber(5, 15)
+      this.healthpoints -= dano
+      this.turnos.unshift({
+        jogador: false,
+        texto: 'Monstro tirou do monstro ' + dano
+      })
+      this.checavitoria()
+    },
+    getRandomNumber: function (min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min
+    },
+    startnewgame () {
+      this.healthpoints = 100
+      this.monsterpoints = 100
+      this.playing = true
+      // limpar o log
+    },
+    giveup () {
+      this.playing = false
+    },
+    checavitoria: function () {
+      if (this.monsterpoints <= 0) {
+        if (confirm('Você Ganhou! deseja começar um novo jogo ?')) {
+          this.startnewgame()
+        } else {
+          this.playing = false
+        }
+        return true
+      } else if (this.healthpoints <= 0) {
+        if (confirm('Voce Perdeu! deseja começar um novo jogo ?')) {
+          this.startnewgame()
+        } else {
+          this.playing = false
+        }
+        return true
+      }
+      return false
+    }
+  }
+})
+</script>
+</html>
+

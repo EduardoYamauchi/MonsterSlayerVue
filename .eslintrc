@@ -1,0 +1,15 @@
+{   
+    "extends": "standard",
+    "env": {
+        "browser": true
+    },
+    "plugins": [
+        "html"
+    ],
+    "globals": {
+        "Vue": true
+    },
+    "rules": {
+        "no-new": 0
+    }
+ }
