@@ -47,10 +47,8 @@
     <section v-if="playing" class="row log">
         <div class="small-12 columns">
             <ul>
-                <li v-for="turno in turnos">
+                <li v-for="turno in turnos" :class="{'player-turn':turno.jogador, 'monster-turn':!turno.jogador}">
                     {{turno.texto}}
-                    <!-- <div class="player-turn"> {{turnos.texto}} </div>
-                    <div class="monster-turn">123 </div> -->
                 </li>
             </ul>
         </div>
