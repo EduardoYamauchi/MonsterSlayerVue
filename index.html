@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Monster Slayer</title>
+    <meta charset="UTF-8">
     <script src="https://npmcdn.com/vue/dist/vue.js">
     </script>
     <link rel="stylesheet" href="foundation.min.css">
@@ -102,6 +103,15 @@ new Vue({
       this.pushlog('Monstro tirou do jogador ' + dano, false)
       this.checavitoria()
     },
+    pushlog (texto, jogador) {
+      if (this.turnos.length === MAX_LOG_SIZE) {
+        this.turnos.shift()
+      }
+      this.turnos.push({
+        texto: texto,
+        jogador: jogador
+      })
+    },
     getRandomNumber: function (min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min
     },
@@ -110,12 +120,6 @@ new Vue({
       this.monsterpoints = 100
       this.playing = true
       this.turnos = []
-    },
-    pushlog (texto, jogador) {
-      this.turnos.push({
-        jogador: jogador,
-        texto: texto
-      })
     },
     checavitoria: function () {
       if (this.monsterpoints <= 0) {
@@ -126,7 +130,7 @@ new Vue({
         }
         return true
       } else if (this.healthpoints <= 0) {
-        if (confirm('Voce Perdeu! deseja começar um novo jogo ?')) {
+        if (confirm('Você Perdeu! deseja começar um novo jogo ?')) {
           this.startnewgame()
         } else {
           this.playing = false
